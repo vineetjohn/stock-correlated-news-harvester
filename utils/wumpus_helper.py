@@ -25,7 +25,7 @@ def extract_numeric_wumpus_response(response):
     return 0
 
 
-def calcMI(wumpus, term_1, term_2, collocation_span):
+def calculate_npmi(wumpus, term_1, term_2, collocation_span):
     """
     @Params: Wumpus telnet instance, terms (2 params), term collocation span
     @Returns: Normalized pointwise mutual index

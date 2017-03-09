@@ -1,7 +1,7 @@
 import json
 import telnetlib
 
-from utils.wumpus_helper import calcMI
+from utils.wumpus_helper import calculate_npmi
 from utils import log_helper
 
 
@@ -16,7 +16,7 @@ with open("/home/v2john/Projects/stock-correlated-news-harvester/config/wumpus_c
         log.error("Error while connecting")
         exit(0)
 
-mi = calcMI(wumpus, "information", "retrieval", 20)
+mi = calculate_npmi(wumpus, "information", "retrieval", 20)
 log.info("NPMI: " + str(mi))
 
 wumpus.close()
