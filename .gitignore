@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Misc Files
+.idea/
+wumpus_config_prod.json
