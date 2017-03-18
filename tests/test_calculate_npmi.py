@@ -7,7 +7,7 @@ from utils import log_helper
 
 log = log_helper.get_logger("test_calculate_npmi")
 
-with open("/home/v2john/Projects/stock-correlated-news-harvester/config/wumpus_config_prod.json") as wumpus_config_file:
+with open("/etc/config/stock-correlated-news-harvester/wumpus_config.json") as wumpus_config_file:
     wumpus_config = json.load(wumpus_config_file)
     wumpus = telnetlib.Telnet(wumpus_config['wumpus_host'], wumpus_config['wumpus_port'])
     if wumpus:
