@@ -2,6 +2,8 @@ import math
 
 from utils import log_helper
 
+log = log_helper.get_logger(__name__)
+
 
 def execute_wumpus_command(wumpus, command):
     """
@@ -31,7 +33,6 @@ def calculate_npmi(wumpus, term_1, term_2, collocation_span):
     @Returns: Normalized pointwise mutual index
     """
 
-    log = log_helper.get_logger("wumpus_helper")
     corpus_term_frequency = 30230685715
 
     # get frequency of NP1

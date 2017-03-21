@@ -5,7 +5,7 @@ from utils.wumpus_helper import calculate_npmi
 from utils import log_helper
 
 
-log = log_helper.get_logger("test_calculate_npmi")
+log = log_helper.get_logger(__name__)
 
 with open("/etc/config/stock-correlated-news-harvester/wumpus_config.json") as wumpus_config_file:
     wumpus_config = json.load(wumpus_config_file)

@@ -6,7 +6,7 @@ from processors.news_aggregation_processor import NewsAggregationProcessor
 from utils import log_helper
 from utils.options import Options
 
-log = log_helper.get_logger("main")
+log = log_helper.get_logger(__name__)
 
 
 def main(argv):

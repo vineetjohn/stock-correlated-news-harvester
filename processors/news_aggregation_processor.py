@@ -5,7 +5,7 @@ from utils import file_helper
 from utils import log_helper
 from utils import stat_analysis_helper
 
-log = log_helper.get_logger("NewsAggregationProcessor")
+log = log_helper.get_logger(__name__)
 
 
 class NewsAggregationProcessor(Processor):

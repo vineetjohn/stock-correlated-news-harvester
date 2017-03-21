@@ -4,11 +4,12 @@ from datetime import datetime
 import pandas
 
 from utils import log_helper
+from utils.options import Options
 
 date_column_header = 'Date'
 price_column_header = 'Adj Close'
 
-log = log_helper.get_logger("FileHelper")
+log = log_helper.get_logger(__name__)
 
 
 def read_stock_history_file(file_path):
