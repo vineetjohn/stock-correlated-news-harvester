@@ -18,14 +18,12 @@ class NewsAggregationProcessor(Processor):
 
         log.info("Calculating first order differences")
         first_order_differences = stat_analysis_helper.calculate_first_order_differential(stock_history_dict)
-        print(len(first_order_differences))
 
         price_difference = first_order_differences.values()
         price_mean = statistics.mean(price_difference)
         price_std = statistics.stdev(price_difference)
-
-        log.info("price_mean: " + str(price_mean))
-        log.info("price_std: " + str(price_std))
+        log.debug("price_mean: " + str(price_mean))
+        log.debug("price_std: " + str(price_std))
 
         good_days = list()
         bad_days = list()
