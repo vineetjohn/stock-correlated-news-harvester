@@ -94,20 +94,21 @@ def get_stock_relevant_docs(wumpus, seed_word):
 
         get_query_term = get_query + relevance_query_response_split[document_start_index] + " " + \
                          relevance_query_response_split[document_end_index] + "\n"
-        # print(get_query_term)
         get_query_response = execute_wumpus_command(wumpus, get_query_term)
         get_query_response = reduce((lambda x, y: x + y), get_query_response)
         get_query_response = get_query_response.split("</DOCNO>")[1].split("</DOC>")[0]
-        get_query_response = file_helper.clean_document(get_query_response)
-        print(get_query_response)
+        tokenized_document = file_helper.clean_document(get_query_response)
 
-        # split_snippets = get_query_response.split(seed_word)
-        # for snippet in split_snippets:
-        #     pass
-            # print(snippet)
+        indexes = [i for i,x in enumerate(tokenized_document) if x == seed_word]
 
+        for i in indexes:
+            before_window = tokenized_document[i-5:i]
+            after_window = tokenized_document[i+1:i+6]
+        
+        total_window = []
+        total_window.extend(before_window)
+        total_window.extend(after_window)
 
-    # term_1_freq = extract_numeric_wumpus_response(term_1_freq_response)
-    # log.debug("TF1: " + str(term_1_freq))
+        print(total_window)
 
     return None
