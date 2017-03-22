@@ -11,6 +11,8 @@ price_column_header = 'Adj Close'
 log = log_helper.get_logger(__name__)
 
 
+stop_words = ['[', ']']
+
 def read_stock_history_file(file_path):
     stock_history_df = pandas.read_csv(file_path)
     stock_history_dict = dict()
@@ -24,5 +26,6 @@ def read_stock_history_file(file_path):
 def clean_document(document_text):
 
     document_text = tokenize.word_tokenize(document_text)
+    document_text = filter(lambda x: x in stop_words, document_text)
 
     return document_text
