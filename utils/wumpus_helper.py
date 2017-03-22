@@ -101,9 +101,9 @@ def get_stock_relevant_docs(wumpus, seed_word):
         get_query_response = file_helper.clean_document(get_query_response)
         print(get_query_response)
 
-        split_snippets = get_query_response.split(seed_word)
-        for snippet in split_snippets:
-            pass
+        # split_snippets = get_query_response.split(seed_word)
+        # for snippet in split_snippets:
+        #     pass
             # print(snippet)
 
 
