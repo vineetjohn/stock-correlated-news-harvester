@@ -1,4 +1,4 @@
-from utils.article_helper import NewsArticleSearchHelper
+from utils.web_driver import NewsArticleSearchHelper
 
 
 article_search_helper = NewsArticleSearchHelper()
