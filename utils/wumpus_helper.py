@@ -92,7 +92,6 @@ def get_colocated_words_and_npmi(wumpus, seed_word, sentiment):
     relevance_query_response_list = execute_wumpus_command(wumpus, relevance_query_command)
 
     # filter list elements containing status messages
-    print(relevance_query_response_list)
     relevance_query_response_list = list(filter(lambda x: '@0' not in x, relevance_query_response_list))
 
     word_map = dict()
@@ -122,7 +121,5 @@ def get_colocated_words_and_npmi(wumpus, seed_word, sentiment):
             npmi = calculate_npmi(wumpus, seed_word, word, 20)
             print(seed_word + " vs " + word + ": " + str(npmi))
             word_map[word] = npmi_factor * npmi
-
-        break
 
     return word_map
