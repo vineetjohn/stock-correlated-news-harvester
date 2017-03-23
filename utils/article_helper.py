@@ -6,6 +6,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+from utils import log_helper
+
+log = log_helper.get_logger(__name__)
+
 
 class NewsArticleSearchHelper(object):
 
@@ -66,4 +70,39 @@ class NewsArticleSearchHelper(object):
         )
         searchButton.click()
 
-        # self.driver.quit()
+        headline_elements = list()
+        while pages_to_explore > 0:
+
+            sleep(randint(2, 4))
+
+            try:
+                large_headline_elements = WebDriverWait(self.driver, self.timeout_seconds).until(
+                    expected_conditions.presence_of_all_elements_located((By.CSS_SELECTOR, ".l._HId"))
+                )
+                headline_elements.extend(large_headline_elements)
+            except Exception:
+                log.debug("No large elements found on page")
+
+            try:
+                small_headline_elements = WebDriverWait(self.driver, self.timeout_seconds).until(
+                    expected_conditions.presence_of_all_elements_located((By.CSS_SELECTOR, "._sQb"))
+                )
+                headline_elements.extend(small_headline_elements)
+            except Exception:
+                log.debug("No small elements found on page")
+
+            try:
+                next_page_button = WebDriverWait(self.driver, self.timeout_seconds).until(
+                    expected_conditions.presence_of_element_located((By.ID, "pnnext"))
+                )
+                next_page_button.click()
+            except Exception:
+                log.debug("No next button found on page")
+                break
+
+            pages_to_explore -= 1
+
+        self.driver.quit()
+
+        url_list = list(map(lambda x: x.get_attribute("href"), headline_elements))
+        return url_list
