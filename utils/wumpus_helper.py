@@ -14,6 +14,7 @@ get_query = "@get "
 document_start_index = 2
 document_end_index = 3
 
+
 def execute_wumpus_command(wumpus, command):
     """
     @Params: Wumpus telnet instance, Text command to run
@@ -72,25 +73,35 @@ def calculate_npmi(wumpus, term_1, term_2, collocation_span):
 
     if joint_prob > 0 and prob_term_1 > 0 and prob_term_2 > 0:
         mutual_information = \
-            math.log(joint_prob / (prob_term_1 * prob_term_2)) /\
+            math.log(joint_prob / (prob_term_1 * prob_term_2)) / \
             -math.log(joint_prob)
 
     return mutual_information
 
 
-def get_stock_relevant_docs(wumpus, seed_word):
-
-    query_term = stock_market_term+ '"' + seed_word + '"'
+def get_colocated_words_and_npmi(wumpus, seed_word, sentiment):
+    query_term = stock_market_term + '"' + seed_word + '"'
     relevance_query_command = relevance_query + query_term + "\n"
     log.info(relevance_query_command)
+
+    if sentiment == "pos":
+        npmi_factor = 1
+    else:
+        npmi_factor = -1
 
     relevance_query_response_list = execute_wumpus_command(wumpus, relevance_query_command)
 
     # filter list elements containing status messages
+    print(relevance_query_response_list)
     relevance_query_response_list = list(filter(lambda x: '@0' not in x, relevance_query_response_list))
 
+    word_map = dict()
+    total_window = set()
     for relevance_query_response in relevance_query_response_list:
         relevance_query_response_split = relevance_query_response.split(" ")
+
+        if relevance_query_response_split[0] == ".":
+            continue
 
         get_query_term = get_query + relevance_query_response_split[document_start_index] + " " + \
                          relevance_query_response_split[document_end_index] + "\n"
@@ -99,16 +110,19 @@ def get_stock_relevant_docs(wumpus, seed_word):
         get_query_response = get_query_response.split("</DOCNO>")[1].split("</DOC>")[0]
         tokenized_document = file_helper.clean_document(get_query_response)
 
-        indexes = [i for i,x in enumerate(tokenized_document) if x == seed_word]
+        indexes = [i for i, x in enumerate(tokenized_document) if x == seed_word]
 
         for i in indexes:
-            before_window = tokenized_document[i-5:i]
-            after_window = tokenized_document[i+1:i+6]
-        
-        total_window = []
-        total_window.extend(before_window)
-        total_window.extend(after_window)
+            before_window = tokenized_document[i - 5:i]
+            total_window |= set(before_window)
+            after_window = tokenized_document[i + 1:i + 6]
+            total_window |= set(after_window)
 
-        print(total_window)
+        for word in total_window:
+            npmi = calculate_npmi(wumpus, seed_word, word, 20)
+            print(seed_word + " vs " + word + ": " + str(npmi))
+            word_map[word] = npmi_factor * npmi
 
-    return None
+        break
+
+    return word_map

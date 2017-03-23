@@ -3,7 +3,6 @@ from datetime import datetime
 from nltk import tokenize
 from nltk.corpus import stopwords
 
-
 import pandas
 
 from utils import log_helper
@@ -14,8 +13,6 @@ dictionary = enchant.Dict("en_US")
 
 log = log_helper.get_logger(__name__)
 
-
-stop_words = ['[', ']']
 
 def read_stock_history_file(file_path):
     stock_history_df = pandas.read_csv(file_path)
@@ -28,7 +25,6 @@ def read_stock_history_file(file_path):
 
 
 def clean_document(document_text):
-
     document_text = tokenize.word_tokenize(document_text.lower())
     document_text = list(filter(lambda x: check_word_validity(x), document_text))
 
@@ -37,4 +33,3 @@ def clean_document(document_text):
 
 def check_word_validity(word):
     return word.isalpha() and dictionary.check(word) and word not in stopwords.words('english')
-
