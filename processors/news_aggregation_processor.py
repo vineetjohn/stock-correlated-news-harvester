@@ -86,7 +86,6 @@ class NewsAggregationProcessor(Processor):
             )
         )
 
-
     def aggregate_news(self, article_search_helper, org_name, date, sentiment):
 
         aftermath_date_start = date + timedelta(days=1)
@@ -98,13 +97,12 @@ class NewsAggregationProcessor(Processor):
 
         news_content = get_article_content(news_article_urls)
 
-        log.info("Filtering content based on lexicons")
+        log.info("Filtering content based on lexicon")
         news_content = list(filter(lambda x: self.confirm_news_sentiment(x[0], sentiment), news_content))
 
         if len(news_content) > 0:
             log.info("Writing content to file")
             list(map(lambda x: self.write_content_to_file(x, aftermath_date_start, org_name, sentiment), news_content))
-
 
     def confirm_news_sentiment(self, article_headline, sentiment):
         tokens = set(word_tokenize(article_headline))
@@ -116,11 +114,10 @@ class NewsAggregationProcessor(Processor):
 
         return False
 
-
     def write_content_to_file(self, article_content, date, org_name, sentiment):
 
-        file_name = org_name + "_" + date.strftime("%Y-%m-%d") + "_" + sentiment
+        file_name = org_name + "_" + date.strftime("%Y-%m-%d") + "_" + sentiment + ".txt"
 
         with open(self.options.results_path + file_name, 'w') as output_file:
-            output_file.write(article_content[0])
+            output_file.write(article_content[0] + "\n")
             output_file.write(article_content[1])
