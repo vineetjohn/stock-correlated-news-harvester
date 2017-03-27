@@ -11,7 +11,7 @@ log = log_helper.get_logger(__name__)
 class NewsAggregationProcessor(Processor):
 
     def process(self):
-        log.info("LexiconGenerationProcessor begun")
+        log.info("NewsAggregationProcessor begun")
 
         log.info("Reading stock history")
         stock_history_dict = file_helper.read_stock_history_file(self.options.stock_file_path)
@@ -36,4 +36,4 @@ class NewsAggregationProcessor(Processor):
         log.debug(str(len(good_days)) + " good days")
         log.debug(str(len(bad_days)) + " bad days")
 
-        log.info("LexiconGenerationProcessor completed")
+        log.info("NewsAggregationProcessor completed")

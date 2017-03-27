@@ -102,7 +102,10 @@ class NewsArticleSearchHelper(object):
 
             pages_to_explore -= 1
 
+        url_list = list()
+        if headline_elements:
+            url_list = list(map(lambda x: x.get_attribute("href"), headline_elements))
+
         self.driver.quit()
 
-        url_list = list(map(lambda x: x.get_attribute("href"), headline_elements))
         return url_list
