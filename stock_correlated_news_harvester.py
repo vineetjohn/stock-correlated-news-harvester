@@ -29,7 +29,11 @@ def parse_args(argv):
     :return:
     """
     parser = ArgumentParser(prog="stock-correlated-news-harvester")
-    parser.add_argument('--stock_file_path', metavar='Stock File Path',
+    parser.add_argument('--stock_histories_file_path', metavar='Stock File Path',
+                        type=str, required=True)
+    parser.add_argument('--stock_symbol_mapping_file_path', metavar='Stock Symbol Mapping File Path',
+                        type=str, required=True)
+    parser.add_argument('--results_path', metavar='Results Path',
                         type=str, required=True)
 
     return parser.parse_args(argv, namespace=Options())
