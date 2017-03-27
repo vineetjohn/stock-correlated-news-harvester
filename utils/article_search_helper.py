@@ -26,6 +26,7 @@ class NewsArticleSearchHelper(object):
     def get_news(self, search_term, start_time, end_time, pages_to_explore):
 
         headline_elements = None
+        url_list = list()
         sleep(randint(60, 120))
 
         try:
@@ -109,11 +110,12 @@ class NewsArticleSearchHelper(object):
                     break
 
                 pages_to_explore -= 1
-        except:
-            log.error("Error while searching for news, skipping " + search_term + " " + start_time)
 
-        url_list = list()
-        if headline_elements:
-            url_list = list(map(lambda x: x.get_attribute("href"), headline_elements))
+            if headline_elements:
+                url_list = list(map(lambda x: x.get_attribute("href"), headline_elements))
+
+        except Exception as e:
+            log.error("Error while searching for news, skipping " + search_term + " " + start_time)
+            log.error(e)
 
         return url_list
