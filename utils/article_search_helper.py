@@ -2,6 +2,7 @@ import os
 from random import randint
 from time import sleep
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -14,9 +15,10 @@ log = log_helper.get_logger(__name__)
 class NewsArticleSearchHelper(object):
 
     def __init__(self):
-        chromedriver = "/home/v2john/Tools/chromedriver"
-        os.environ["webdriver.chrome.driver"] = chromedriver
-        self.driver = webdriver.Chrome(chromedriver)
+        dcap = dict(DesiredCapabilities.PHANTOMJS)
+        dcap["phantomjs.page.settings.userAgent"] = \
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.110 Safari/537.36"
+        self.driver = webdriver.PhantomJS(desired_capabilities=dcap, executable_path="/usr/bin/phantomjs")
         self.timeout_seconds = 10
         self.search_url = "https://news.google.com/news/advanced_news_search"
 
@@ -25,7 +27,7 @@ class NewsArticleSearchHelper(object):
 
     def get_news(self, search_term, start_time, end_time, pages_to_explore):
 
-        headline_elements = None
+        headline_elements = list()
         url_list = list()
         sleep(randint(60, 120))
 
@@ -78,12 +80,13 @@ class NewsArticleSearchHelper(object):
                 expected_conditions.presence_of_element_located((By.ID, "ansp_search-button"))
             )
             searchButton.click()
+            log.debug("Fired search")
 
-            headline_elements = list()
             while pages_to_explore > 0:
 
                 sleep(randint(2, 4))
 
+                log.debug("Getting large elements")
                 try:
                     large_headline_elements = WebDriverWait(self.driver, self.timeout_seconds).until(
                         expected_conditions.presence_of_all_elements_located((By.CSS_SELECTOR, ".l._HId"))
@@ -92,6 +95,7 @@ class NewsArticleSearchHelper(object):
                 except Exception:
                     log.debug("No large elements found on page")
 
+                log.debug("Getting small elements")
                 try:
                     small_headline_elements = WebDriverWait(self.driver, self.timeout_seconds).until(
                         expected_conditions.presence_of_all_elements_located((By.CSS_SELECTOR, "._sQb"))
@@ -100,6 +104,7 @@ class NewsArticleSearchHelper(object):
                 except Exception:
                     log.debug("No small elements found on page")
 
+                log.debug("Moving to the next page")
                 try:
                     next_page_button = WebDriverWait(self.driver, self.timeout_seconds).until(
                         expected_conditions.presence_of_element_located((By.ID, "pnnext"))
@@ -111,8 +116,7 @@ class NewsArticleSearchHelper(object):
 
                 pages_to_explore -= 1
 
-            if headline_elements:
-                url_list = list(map(lambda x: x.get_attribute("href"), headline_elements))
+            url_list = list(map(lambda x: x.get_attribute("href"), headline_elements))
 
         except Exception as e:
             log.error("Error while searching for news, skipping " + search_term + " " + start_time)
