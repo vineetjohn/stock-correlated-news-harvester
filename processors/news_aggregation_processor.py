@@ -91,7 +91,8 @@ class NewsAggregationProcessor(Processor):
         aftermath_date_end = date + timedelta(days=3)
         news_article_urls = \
             article_search_helper.get_news(
-                org_name, aftermath_date_start.strftime("%m/%d/%Y"), aftermath_date_end.strftime("%m/%d/%Y"), 3
+                org_name, aftermath_date_start.strftime("%m/%d/%Y"), aftermath_date_end.strftime("%m/%d/%Y"), 3,
+                LEXICON[sentiment]
             )
 
         news_content = get_article_content(news_article_urls)
