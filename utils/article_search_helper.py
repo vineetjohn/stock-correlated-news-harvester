@@ -19,17 +19,22 @@ class NewsArticleSearchHelper(object):
         dcap["phantomjs.page.settings.userAgent"] = \
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.110 Safari/537.36"
         self.driver = webdriver.PhantomJS(desired_capabilities=dcap, executable_path="/usr/bin/phantomjs")
+
+        # chromedriver = "/home/v2john/Tools/chromedriver"
+        # os.environ["webdriver.chrome.driver"] = chromedriver
+        # self.driver = webdriver.Chrome(chromedriver)
+
         self.timeout_seconds = 10
         self.search_url = "https://news.google.com/news/advanced_news_search"
 
     def destroy(self):
         self.driver.quit()
 
-    def get_news(self, search_term, start_time, end_time, pages_to_explore):
+    def get_news(self, search_term, start_time, end_time, pages_to_explore, sentiment_word_list):
 
         headline_elements = list()
         url_list = list()
-        sleep(randint(60, 120))
+        # sleep(randint(60, 120))
 
         try:
             self.driver.get(self.search_url)
@@ -37,20 +42,22 @@ class NewsArticleSearchHelper(object):
             keyword_box = WebDriverWait(self.driver, self.timeout_seconds).until(
                 expected_conditions.presence_of_element_located((By.ID, "all-keyword-input"))
             )
-            keyword_box.send_keys(search_term)
+            keyword_box.send_keys(search_term + " stock market")
             sleep(randint(1, 2))
 
-            occurrence_selector = WebDriverWait(self.driver, self.timeout_seconds).until(
-                expected_conditions.presence_of_element_located((By.ID, "position-filter-select"))
-            )
-            occurrence_selector.click()
-            sleep(randint(1, 2))
+            # Code to limit the search to only headines
 
-            headline_selector = WebDriverWait(self.driver, self.timeout_seconds).until(
-                expected_conditions.presence_of_element_located((By.ID, ":3"))
-            )
-            headline_selector.click()
-            sleep(randint(1, 2))
+            # occurrence_selector = WebDriverWait(self.driver, self.timeout_seconds).until(
+            #     expected_conditions.presence_of_element_located((By.ID, "position-filter-select"))
+            # )
+            # occurrence_selector.click()
+            # sleep(randint(1, 2))
+            #
+            # headline_selector = WebDriverWait(self.driver, self.timeout_seconds).until(
+            #     expected_conditions.presence_of_element_located((By.ID, ":3"))
+            # )
+            # headline_selector.click()
+            # sleep(randint(1, 2))
 
             date_range_selector = WebDriverWait(self.driver, self.timeout_seconds).until(
                 expected_conditions.presence_of_element_located((By.ID, "date-filter-select"))
@@ -80,6 +87,8 @@ class NewsArticleSearchHelper(object):
                 expected_conditions.presence_of_element_located((By.ID, "ansp_search-button"))
             )
             searchButton.click()
+
+            # self.driver.save_screenshot("/home/v2john/ss.png")
             log.debug("Fired search")
 
             while pages_to_explore > 0:
@@ -91,7 +100,7 @@ class NewsArticleSearchHelper(object):
                     large_headline_elements = WebDriverWait(self.driver, self.timeout_seconds).until(
                         expected_conditions.presence_of_all_elements_located((By.CSS_SELECTOR, ".l._HId"))
                     )
-                    headline_elements.extend(large_headline_elements)
+                    self.add_to_url_list(url_list, large_headline_elements)
                 except Exception:
                     log.debug("No large elements found on page")
 
@@ -100,7 +109,7 @@ class NewsArticleSearchHelper(object):
                     small_headline_elements = WebDriverWait(self.driver, self.timeout_seconds).until(
                         expected_conditions.presence_of_all_elements_located((By.CSS_SELECTOR, "._sQb"))
                     )
-                    headline_elements.extend(small_headline_elements)
+                    self.add_to_url_list(url_list, small_headline_elements)
                 except Exception:
                     log.debug("No small elements found on page")
 
@@ -116,10 +125,16 @@ class NewsArticleSearchHelper(object):
 
                 pages_to_explore -= 1
 
-            url_list = list(map(lambda x: x.get_attribute("href"), headline_elements))
-
         except Exception as e:
             log.error("Error while searching for news, skipping " + search_term + " " + start_time)
             log.error(e)
 
         return url_list
+
+    def add_to_url_list(self, url_list, element_list):
+        for element in element_list:
+            try:
+                url_list.append(element.get_attribute("href"))
+            except Exception as e:
+                log.debug(e)
+                log.debug("Skipping element")

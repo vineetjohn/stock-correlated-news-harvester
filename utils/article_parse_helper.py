@@ -11,7 +11,7 @@ def get_article_content(url_list):
 
     for url in url_list:
         try:
-            article = Article(url)
+            article = Article(url, language='en')
             article.download()
             sleep(1)
             article.parse()

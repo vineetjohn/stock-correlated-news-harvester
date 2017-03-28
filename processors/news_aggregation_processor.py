@@ -48,7 +48,6 @@ class NewsAggregationProcessor(Processor):
         article_search_helper.destroy()
         log.info("NewsAggregationProcessor completed")
 
-
     def process_org_stock_history(self, stock_history_file, stock_symbol_mapping, article_search_helper):
 
         org_symbol = stock_history_file.split(STOCK_HISTORY_FILE_PREFIX)[1].split(STOCK_HISTORY_FILE_SUFFIX)[0]
@@ -89,7 +88,7 @@ class NewsAggregationProcessor(Processor):
     def aggregate_news(self, article_search_helper, org_name, date, sentiment):
 
         aftermath_date_start = date + timedelta(days=1)
-        aftermath_date_end = date + timedelta(days=2)
+        aftermath_date_end = date + timedelta(days=3)
         news_article_urls = \
             article_search_helper.get_news(
                 org_name, aftermath_date_start.strftime("%m/%d/%Y"), aftermath_date_end.strftime("%m/%d/%Y"), 3
