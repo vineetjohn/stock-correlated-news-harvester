@@ -97,8 +97,8 @@ class NewsAggregationProcessor(Processor):
 
         news_content = get_article_content(news_article_urls)
 
-        # log.info("Filtering content based on lexicon")
-        # news_content = list(filter(lambda x: self.confirm_news_sentiment(x[0], sentiment), news_content))
+        log.info("Filtering content based on lexicon")
+        news_content = list(filter(lambda x: self.confirm_news_sentiment(x[0], sentiment), news_content))
 
         if len(news_content) > 0:
             log.info("Writing content to file")

@@ -1,4 +1,3 @@
-from time import sleep
 from newspaper import Article
 
 from utils import log_helper
@@ -11,9 +10,8 @@ def get_article_content(url_list):
 
     for url in url_list:
         try:
-            article = Article(url, language='en')
+            article = Article(url)
             article.download()
-            sleep(1)
             article.parse()
             article_tuple = (article.title, article.text)
             article_tuples.append(article_tuple)
