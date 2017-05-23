@@ -87,15 +87,16 @@ class NewsAggregationProcessor(Processor):
 
     def aggregate_news(self, article_search_helper, org_name, date, sentiment):
 
-        aftermath_date_start = date + timedelta(days=1)
-        aftermath_date_end = date + timedelta(days=3)
-        news_article_urls = \
+        aftermath_date_start = date
+        aftermath_date_end = date + timedelta(days=30)
+        tweet_statuses = \
             article_search_helper.get_news(
-                org_name, aftermath_date_start.strftime("%m/%d/%Y"), aftermath_date_end.strftime("%m/%d/%Y"),
+                org_name, aftermath_date_start.strftime("%Y-%m-%d"), aftermath_date_end.strftime("%Y-%m-%d"),
                 LEXICON[sentiment]
             )
 
-        news_content = get_tweet_content(news_article_urls)
+        log.info("Retrieved tweet statuses " + str(len(tweet_statuses)))
+        news_content = get_tweet_content(tweet_statuses)
 
         # log.info("Filtering content based on lexicon")
         # news_content = list(filter(lambda x: self.confirm_news_sentiment(x[0], sentiment), news_content))
