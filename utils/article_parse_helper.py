@@ -19,3 +19,12 @@ def get_article_content(url_list):
             log.error(e)
 
     return article_tuples
+
+
+def get_tweet_content(status_list):
+    tweets = list()
+
+    for status in status_list:
+        tweets.append(status.text)
+
+    return tweets

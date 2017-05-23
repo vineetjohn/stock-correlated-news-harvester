@@ -1,6 +1,7 @@
 import json
-import urllib
+
 import twitter
+
 from utils import log_helper
 
 log = log_helper.get_logger(__name__)
@@ -15,7 +16,8 @@ class TweetSearchHelper(object):
             twitter.Api(consumer_key=self.twitter_config['consumer_key'],
                         consumer_secret=self.twitter_config['consumer_secret'],
                         access_token_key=self.twitter_config['access_token_key'],
-                        access_token_secret=self.twitter_config['access_token_secret'])
+                        access_token_secret=self.twitter_config['access_token_secret'],
+                        sleep_on_rate_limit=True)
 
     def get_news(self, search_term, start_time, end_time, sentiment_word_list):
         search_term = search_term + " " + " OR ".join(sentiment_word_list)

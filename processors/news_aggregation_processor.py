@@ -1,16 +1,17 @@
 import json
 import statistics
-from nltk import word_tokenize
 from datetime import timedelta
 from os import listdir
 from os.path import isfile, join
+
+from nltk import word_tokenize
 
 from processors.processor import Processor
 from utils import file_helper
 from utils import log_helper
 from utils import stat_analysis_helper
-from utils.article_search_helper import NewsArticleSearchHelper
-from utils.article_parse_helper import get_article_content
+from utils.article_parse_helper import get_tweet_content
+from utils.tweet_search_helper import TweetSearchHelper
 
 log = log_helper.get_logger(__name__)
 
@@ -38,14 +39,13 @@ class NewsAggregationProcessor(Processor):
             stock_symbol_mapping = json.load(stock_symbol_mapping_file)
 
         # mapper function for each file to a function
-        article_search_helper = NewsArticleSearchHelper()
+        article_search_helper = TweetSearchHelper(self.options.twitter_config_file_path)
         list(
             map(
                 lambda x: self.process_org_stock_history(x, stock_symbol_mapping, article_search_helper),
                 stock_history_files)
         )
 
-        article_search_helper.destroy()
         log.info("NewsAggregationProcessor completed")
 
     def process_org_stock_history(self, stock_history_file, stock_symbol_mapping, article_search_helper):
@@ -91,11 +91,11 @@ class NewsAggregationProcessor(Processor):
         aftermath_date_end = date + timedelta(days=3)
         news_article_urls = \
             article_search_helper.get_news(
-                org_name, aftermath_date_start.strftime("%m/%d/%Y"), aftermath_date_end.strftime("%m/%d/%Y"), 3,
+                org_name, aftermath_date_start.strftime("%m/%d/%Y"), aftermath_date_end.strftime("%m/%d/%Y"),
                 LEXICON[sentiment]
             )
 
-        news_content = get_article_content(news_article_urls)
+        news_content = get_tweet_content(news_article_urls)
 
         # log.info("Filtering content based on lexicon")
         # news_content = list(filter(lambda x: self.confirm_news_sentiment(x[0], sentiment), news_content))
@@ -119,5 +119,4 @@ class NewsAggregationProcessor(Processor):
         file_name = org_name + "_" + date.strftime("%Y-%m-%d") + "_" + sentiment + ".txt"
 
         with open(self.options.results_path + file_name, 'w') as output_file:
-            output_file.write(article_content[0] + "\n")
-            output_file.write(article_content[1])
+            output_file.write(article_content + "\n")

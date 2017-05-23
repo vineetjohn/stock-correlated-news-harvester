@@ -33,6 +33,8 @@ def parse_args(argv):
                         type=str, required=True)
     parser.add_argument('--stock_symbol_mapping_file_path', metavar='Stock Symbol Mapping File Path',
                         type=str, required=True)
+    parser.add_argument('--twitter_config_file_path', metavar='Twitter Credentials Config File',
+                        type=str, required=True)
     parser.add_argument('--results_path', metavar='Results Path',
                         type=str, required=True)
 

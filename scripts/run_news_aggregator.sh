@@ -6,4 +6,5 @@ STOCK_FILE_PATH="/home/v2john/MEGA/Academic/Masters/UWaterloo/Research/StockAnal
 /usr/bin/python3 "$CODEDIR"/stock_correlated_news_harvester.py \
 --stock_histories_file_path "$STOCK_FILE_PATH" \
 --stock_symbol_mapping_file_path /home/v2john/MEGA/Academic/Masters/UWaterloo/Research/StockAnalysis/metadata/symbol_mapping.json \
+--twitter_config_file_path /etc/config/stock-correlated-news-harvester/twitter_config.json \
 --results_path /home/v2john/MEGA/Academic/Masters/UWaterloo/Research/StockAnalysis/annotated-articles/
