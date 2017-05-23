@@ -18,11 +18,12 @@ class TweetSearchHelper(object):
                         access_token_secret=self.twitter_config['access_token_secret'])
 
     def get_news(self, search_term, start_time, end_time, sentiment_word_list):
+        search_term = search_term + " " + " OR ".join(sentiment_word_list)
         results = \
             self.twitter_api.GetSearch(
                 term=search_term,
                 since=start_time,
-                # until=end_time,
+                until=end_time,
                 lang="en"
             )
 
